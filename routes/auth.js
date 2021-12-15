@@ -5,6 +5,7 @@ const User = require("../models/user")
 
 
 router.post("/register",async (req,res)=>{
+
     const user = new User({
         userName: req.body.userName,
         email: req.body.email,
@@ -27,7 +28,7 @@ router.post("/register",async (req,res)=>{
         res.status(500).json(
             {
                 message: "There is an error for this operation",
-                body:err
+                body:error
             }
         );
     }
