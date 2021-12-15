@@ -62,7 +62,7 @@ router.put("/:id", verifyTokenAndOperator, async (req, res) => {
     }
   });
 
-  //DELETE
+//DELETE
 router.delete("/:id", verifyTokenAndOperator, async (req, res) => {
     try {
       deletedStaff = await Staff.findByIdAndDelete(req.params.id);

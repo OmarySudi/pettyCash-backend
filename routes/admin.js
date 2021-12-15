@@ -1,10 +1,12 @@
 const router = require("express").Router();
 const User = require("../models/user")
+const Country = require("../models/country")
 
 const {
     verifyTokenAndAdmin,
   } = require("./verifyToken");
 
+//ASSIGN A ROLE TO A USER
 router.put("/assign-role/:id",verifyTokenAndAdmin,async (req,res)=>{
     try {
         const updatedUser = await User.findByIdAndUpdate(
@@ -14,7 +16,7 @@ router.put("/assign-role/:id",verifyTokenAndAdmin,async (req,res)=>{
           },
           { new: true }
         );
-        
+
         if (updatedUser != null) {
           res.status(200).json(
             {
