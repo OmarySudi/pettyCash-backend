@@ -1,0 +1,36 @@
+const express = require("express")
+const dotenv = require("dotenv")
+const cors = require("cors")
+const authRoute = require("./routes/auth")
+const staffRoute = require("./routes/staff")
+const expenseRoute = require("./routes/expense")
+const mongoose = require("mongoose")
+
+
+dotenv.config()
+
+const app = express();
+
+mongoose.connect(process.env.MONGO_URL).then(()=>{
+    console.log("DB connection successfully");
+}).catch((error)=>console.log(error))
+
+app.use(cors());
+app.use(express.json());
+app.use("/api/v1/auth",authRoute);
+app.use("/api/v1/staffs",staffRoute),
+app.use("/api/v1/expenses",expenseRoute),
+app.listen(process.env.PORT || 5000,()=>{
+    console.log("HELLO")
+})
+
+
+
+
+
+
+
+
+
+
+
