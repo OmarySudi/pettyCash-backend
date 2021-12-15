@@ -27,7 +27,17 @@ const verifyTokenAndAuthorization = (req, res, next) => {
 
 const verifyTokenAndOperator = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.user.isOperator) {
+    if (req.user.role == "operator") {
+      next();
+    } else {
+      res.status(403).json("You are not allowed to do that!");
+    }
+  });
+};
+
+const verifyTokenAndAdmin = (req, res, next) => {
+  verifyToken(req, res, () => {
+    if (req.user.role == "admin") {
       next();
     } else {
       res.status(403).json("You are not allowed to do that!");
@@ -39,4 +49,5 @@ module.exports = {
   verifyToken,
   verifyTokenAndAuthorization,
   verifyTokenAndOperator,
+  verifyTokenAndAdmin
 };

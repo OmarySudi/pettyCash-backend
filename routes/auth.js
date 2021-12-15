@@ -8,13 +8,13 @@ router.post("/register",async (req,res)=>{
     const user = new User({
         userName: req.body.userName,
         email: req.body.email,
-        isOperator: req.body.isOperator? req.body.isOperator: false,
+        role: req.body.role? req.body.role: "default",
         password: CryptoJS.AES.encrypt(
             req.body.password,
             process.env.PASS_KEY
           ).toString(),
     });
-
+    
     try{
         const savedUser = await user.save();
         const {password, ...otherFields} = savedUser._doc; 
@@ -59,7 +59,7 @@ router.post('/login', async (req, res) => {
         {
             id: user._id,
             email: user.email,
-            isOperator: user.isOperator,
+            role: user.role,
         },
         process.env.JWT_KEY,
              {expiresIn:"10d"}

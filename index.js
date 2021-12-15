@@ -4,6 +4,7 @@ const cors = require("cors")
 const authRoute = require("./routes/auth")
 const staffRoute = require("./routes/staff")
 const expenseRoute = require("./routes/expense")
+const adminRoute = require("./routes/admin")
 const mongoose = require("mongoose")
 
 
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use("/api/v1/auth",authRoute);
 app.use("/api/v1/staffs",staffRoute),
 app.use("/api/v1/expenses",expenseRoute),
+app.use("/api/v1/admin",adminRoute),
 app.listen(process.env.PORT || 5000,()=>{
     console.log("HELLO")
 })
