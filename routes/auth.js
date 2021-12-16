@@ -3,8 +3,9 @@ const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user")
 const nodemailer = require("nodemailer")
-const {sendConfirmationEmail} = require("../utilities/nodemailer")
-
+const {
+    sendConfirmationEmail,
+    sendPasswordResetEmail} = require("../utilities/nodemailer")
 
 router.post("/register",async (req,res)=>{
 
@@ -122,7 +123,7 @@ router.get("/confirm/:confirmationCode",async(req,res)=>{
         const user = await User.findOne({
             confirmationCode: req.params.confirmationCode
         });
-        
+
         user.isEmailVerified = true;
         await user.save();
         res.status(200).json({
@@ -139,44 +140,50 @@ router.get("/confirm/:confirmationCode",async(req,res)=>{
     }
 });
 
-// router.put("/forgot-password/:id", async (req,res)=>{
+router.post("/send-password-reset",(req,res)=>{
+    try{
+        sendPasswordResetEmail(req.body.email);
+        res.status(200).json({
+            message: "The password reset link has been sent to your email"
+        })
+    }catch(err){
+        res.status(500).json({
+            message: "There is an internal error"
+        })
+    }
+   
+});
 
-//     console.log("it passes here1");
+router.post("/reset-password",async (req,res)=>{
 
-//     // const user = User.findById({id:req.params.id});
-
-//     // console.log("it passes here2");
-//     // console.log(user);
-
-//     // !user && res.status(500).json("The user trying to change password is not found");
-
-//     if(req.body.password != req.body.confirmPassword)
-//         res.status(500).json("Passwords should match");
     
-//     const hashedPassword = CryptoJS.AES.encrypt(
-//                                 req.body.password,
-//                                 process.env.PASS_KEY
-//                             ).toString();
+    const password = CryptoJS.AES.encrypt(
+                            req.body.password,
+                            process.env.PASS_KEY
+                        ).toString();
+    
+    try{
 
-//     console.log(hashedPassword);
-//     try{
-//         const updatedUser = User.findByIdAndUpdate(
-//             req.params.id,
-//             {
-//                 $set: { password:hashedPassword}
-//             },
-//             { new: true}
-//             )
+        const user = await User.findOne({
+            email: req.body.email
+        });
 
-//         res.status(200).json({
-//             message: "Your password has been updated",
-//             body: updatedUser
-//         });
-//     }
-//     catch(err){
-//         res.status(500).json(err);
-//     }
-// })
+        user.password = password;
 
+        await user.save();
+
+        res.status(200).json({
+            message: "Password is successfully changed"
+        })
+
+    } catch(err){
+        res.status(500).json(
+            {
+                message: "There is an error for this operation",
+                body:err
+            }
+        );
+    }
+})
 
 module.exports = router
