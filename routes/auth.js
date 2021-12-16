@@ -6,39 +6,56 @@ const User = require("../models/user")
 
 router.post("/register",async (req,res)=>{
 
-    const user = new User({
-        userName: req.body.userName,
-        email: req.body.email,
-        role: req.body.role? req.body.role: "default",
-        password: CryptoJS.AES.encrypt(
-            req.body.password,
-            process.env.PASS_KEY
-          ).toString(),
-    });
-    
-    try{
-        const savedUser = await user.save();
-        const {password, ...otherFields} = savedUser._doc; 
-        res.status(201).json({
-            message: "You have successfully been registered",
-            body:otherFields
-        });
-    } catch(error){
-        console.log("errors")
-        res.status(500).json(
-            {
-                message: "There is an error for this operation",
-                body:error
+    User.exists({email: req.body.email},async(err,doc)=>{
+        if(err){
+            console.log(err);
+
+        } else {
+            if(doc){
+
+                res.status(500).json({
+                    message: "Email is already been used"
+                })
+
+            } else {
+               
+                const user = new User({
+                    email: req.body.email,
+                    role: req.body.role? req.body.role: "default",
+                    password: CryptoJS.AES.encrypt(
+                        req.body.password,
+                        process.env.PASS_KEY
+                      ).toString(),
+                });
+
+                try{
+                    const savedUser = await user.save();
+                    const {password, ...otherFields} = savedUser._doc; 
+                    res.status(201).json({
+                        message: "You have successfully been registered",
+                        body:otherFields
+                    });
+                } catch(error){
+                    console.log("errors")
+                    res.status(500).json(
+                        {
+                            message: "There is an error for this operation",
+                            body:error
+                        }
+                    );
+                }
+
             }
-        );
-    }
+        }
+    });
+
 });
 
 router.post('/login', async (req, res) => {
     try{
         const user = await User.findOne(
             {
-                userName: req.body.userName
+                userName: req.body.email
             }
         );
         
