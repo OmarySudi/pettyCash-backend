@@ -12,14 +12,13 @@ router.post("/register",async (req,res)=>{
     User.exists({email: req.body.email},async(err,doc)=>{
         if(err){
             console.log(err);
-
         } else {
             if(doc){
 
-                res.status(500).json({
-                    message: "Email is already been used"
+                res.status(200).json({
+                    message: "Email is already been used",
+                    error: true
                 })
-
             } else {
 
                 const token = jwt.sign({email:req.body.email},process.env.JWT_KEY);
@@ -73,7 +72,10 @@ router.post('/login', async (req, res) => {
             }
         );
 
-        !user && res.status(401).json({message: "You have supplied wrong email"});
+        !user && res.status(200).json({
+            message: "You have supplied wrong email",
+            error: true
+        });
 
         if(user.isEmailVerified){
 
@@ -87,7 +89,10 @@ router.post('/login', async (req, res) => {
             const inputPassword = req.body.password;
             
             originalPassword != inputPassword && 
-                res.status(401).json({message: "You have supplied wrong password"});
+                res.status(200).json({
+                    message: "You have supplied wrong password",
+                    error: true
+                });
     
             const accessToken = jwt.sign(
             {
@@ -103,8 +108,9 @@ router.post('/login', async (req, res) => {
             res.status(200).json({...others, accessToken});
     
             } else {
-                res.status(401).json({
-                    message: "Check your email to verify your account!!"
+                res.status(200).json({
+                    message: "Check your email to verify your account!!",
+                    error: true
                 })
             }
         } catch(err){

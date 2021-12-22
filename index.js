@@ -7,6 +7,7 @@ const expenseRoute = require("./routes/expense")
 const adminRoute = require("./routes/admin")
 const countryRoute = require("./routes/country")
 const mongoose = require("mongoose")
+const {generateUploadURL} = require("./utilities/s3")
 
 
 dotenv.config()
@@ -19,6 +20,12 @@ mongoose.connect(process.env.MONGO_URL).then(()=>{
 
 app.use(cors());
 app.use(express.json());
+
+app.get('/s3Url',async (req,res)=>{
+    const url = await generateUploadURL();
+    res.send(url);
+})
+
 app.use("/api/v1/auth",authRoute);
 app.use("/api/v1/staffs",staffRoute);
 app.use("/api/v1/expenses",expenseRoute);
