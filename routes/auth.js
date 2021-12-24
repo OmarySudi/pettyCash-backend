@@ -38,7 +38,7 @@ router.post("/register",async (req,res)=>{
                     const savedUser = await user.save();
                     const {password, ...otherFields} = savedUser._doc; 
                     res.status(201).json({
-                        message: "You have been registered! Check your email for confirmation",
+                        message: "Account created, kindly login to your Email and verify your account",
                         body:otherFields
                     });
 
