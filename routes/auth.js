@@ -5,7 +5,9 @@ const User = require("../models/user")
 const nodemailer = require("nodemailer")
 const {
     sendConfirmationEmail,
-    sendPasswordResetEmail} = require("../utilities/nodemailer")
+    sendPasswordResetEmail} = require("../utilities/nodemailer");
+
+const { verifyToken } = require("./verifyToken");
 
 router.post("/register",async (req,res)=>{
 
@@ -64,6 +66,38 @@ router.post("/register",async (req,res)=>{
 
 });
 
+router.get('/me',verifyToken,async (req,res)=>{
+    try {
+        const user = await User.findById(req.user.id);
+  
+        if(user != null){
+          res.status(200).json(
+            {
+              message: "Successfully operation",
+              body:user
+            }
+          );
+  
+        } else {
+          res.status(200).json(
+            {
+              message: "There is no user with specified id",
+              error: true
+            }
+          );
+        }
+       
+    } catch (err) {
+
+        res.status(500).json(
+          {
+              message: "There is an internal error for this operation",
+              body:err
+          }
+        );
+    }
+})
+
 router.post('/login', async (req, res) => {
     try{
         const user = await User.findOne(
@@ -109,7 +143,7 @@ router.post('/login', async (req, res) => {
     
             } else {
                 res.status(200).json({
-                    message: "Check your email to verify your account!!",
+                    message: "kindly login to your Email and verify your account!",
                     error: true
                 })
             }
