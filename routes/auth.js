@@ -113,48 +113,58 @@ router.post('/login', async (req, res) => {
 
         if(user.isEmailVerified){
 
-            const hashedPassword = CryptoJS.AES.decrypt(
-                user.password,
-                process.env.PASS_KEY
-            );
-    
-            const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
-    
-            const inputPassword = req.body.password;
-            
-            originalPassword != inputPassword && 
+            if(user.role == "default"){
+
                 res.status(200).json({
-                    message: "You have supplied wrong password",
-                    error: true
-                });
-    
-            const accessToken = jwt.sign(
-            {
-                id: user._id,
-                email: user.email,
-                role: user.role,
-            },
-            process.env.JWT_KEY,
-                 {expiresIn:"10d"}
-            );
-      
-            const { password, ...others } = user._doc;  
-            res.status(200).json({...others, accessToken});
-    
-            } else {
-                res.status(200).json({
-                    message: "kindly login to your Email and verify your account!",
+                    message: "You have no assigned role. Contact Administrator",
                     error: true
                 })
-            }
-        } catch(err){
-            res.status(500).json(
+
+            } else {
+                
+                const hashedPassword = CryptoJS.AES.decrypt(
+                    user.password,
+                    process.env.PASS_KEY
+                );
+        
+                const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
+        
+                const inputPassword = req.body.password;
+                
+                originalPassword != inputPassword && 
+                    res.status(200).json({
+                        message: "You have supplied wrong password",
+                        error: true
+                    });
+        
+                const accessToken = jwt.sign(
                 {
-                    message: "There is an error for this operation",
-                    body:err
-                }
-            );
+                    id: user._id,
+                    email: user.email,
+                    role: user.role,
+                },
+                process.env.JWT_KEY,
+                     {expiresIn:"10d"}
+                );
+          
+                const { password, ...others } = user._doc;  
+                res.status(200).json({...others, accessToken});
+            }
+
+        } else {
+            res.status(200).json({
+                message: "kindly login to your Email and verify your account!",
+                error: true
+            })
         }
+    } catch(err){
+        res.status(500).json(
+            {
+                message: "There is an error for this operation",
+                body:err
+            }
+        );
+    }
 });
 
 router.get("/confirm/:confirmationCode",async(req,res)=>{
