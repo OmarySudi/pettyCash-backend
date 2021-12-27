@@ -2,12 +2,16 @@ const router = require("express").Router();
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user")
-const nodemailer = require("nodemailer")
+const dotenv = require('dotenv')
+
 const {
     sendConfirmationEmail,
-    sendPasswordResetEmail} = require("../utilities/nodemailer");
+    sendPasswordResetEmail,
+    sendRegistrationEmailToAdmin} = require("../utilities/nodemailer");
 
 const { verifyToken } = require("./verifyToken");
+
+dotenv.config()
 
 router.post("/register",async (req,res)=>{
 
@@ -49,7 +53,9 @@ router.post("/register",async (req,res)=>{
                         otherFields.email,
                         otherFields.confirmationCode         
                     )  
-                   
+                    
+                    // sendRegistrationEmailToAdmin(email);
+
                 } catch(error){
                     console.log("errors")
                     res.status(500).json(
@@ -176,10 +182,8 @@ router.get("/confirm/:confirmationCode",async(req,res)=>{
 
         user.isEmailVerified = true;
         await user.save();
-        res.status(200).json({
-            message: "User has been verified"
-        })
-         
+        res.redirect(process.env.FRONT_LOGIN)
+  
     }catch(err){
         res.status(500).json(
             {
