@@ -17,14 +17,15 @@ const s3 = new AWS.S3({
     signatureVersion: 'v4'
 });
 
-const generateUploadURL = async()=>{
+const generateUploadURL = async(extension)=>{
 
     const rawBytes = randomBytes(16);
     const fileName = rawBytes.toString('hex');
+    const fileNameWithExtension = fileName+"."+extension;
     
     const params = ({
         Bucket: bucketName,
-        Key: fileName,
+        Key: fileNameWithExtension,
         Expires: 60
     });
 

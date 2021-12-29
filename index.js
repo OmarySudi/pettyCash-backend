@@ -21,8 +21,8 @@ mongoose.connect(process.env.MONGO_URL).then(()=>{
 app.use(cors());
 app.use(express.json());
 
-app.get('/s3Url',async (req,res)=>{
-    const url = await generateUploadURL();
+app.get('/s3Url/:extension',async (req,res)=>{
+    const url = await generateUploadURL(req.params.extension);
     res.send(url);
 })
 
