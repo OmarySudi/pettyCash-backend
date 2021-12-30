@@ -11,7 +11,7 @@ const StaffSchema = new mongoose.Schema(
         country: { type: String, required: true},
         identityCardNo: { type: String, required: true},
         identityCardCopy: { type: String, required: true},
-        cv: { type: String, required: true},
+        cv: { type: String},
         passportNo: {type: String},
         passport: { type: String},
         bankAccountNumber: { type: Number, required:true},
