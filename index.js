@@ -23,7 +23,7 @@ app.use(express.json());
 
 app.get('/s3Url/:extension',async (req,res)=>{
     const url = await generateUploadURL(req.params.extension);
-    res.send(url);
+    res.send({url:url});
 })
 
 app.use("/api/v1/auth",authRoute);
