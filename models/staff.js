@@ -15,8 +15,9 @@ const StaffSchema = new mongoose.Schema(
         passportNo: {type: String},
         passport: { type: String},
         bankAccountNumber: { type: Number, required:true},
+        accountName: {type: String, required: true},
         bankName: { type: String, required:true},
-        swiftCode: { type:String, required:true},
+        swiftCode: { type:String},
         IBAN: { type: String}
 
     },
