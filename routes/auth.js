@@ -119,43 +119,33 @@ router.post('/login', async (req, res) => {
 
         if(user.isEmailVerified){
 
-            if(user.role == "default"){
-
+            const hashedPassword = CryptoJS.AES.decrypt(
+                user.password,
+                process.env.PASS_KEY
+            );
+    
+            const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
+    
+            const inputPassword = req.body.password;
+            
+            originalPassword != inputPassword && 
                 res.status(200).json({
-                    message: "You have no assigned role. Contact Administrator",
+                    message: "You have supplied wrong password",
                     error: true
-                })
-
-            } else {
-                
-                const hashedPassword = CryptoJS.AES.decrypt(
-                    user.password,
-                    process.env.PASS_KEY
-                );
-        
-                const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
-        
-                const inputPassword = req.body.password;
-                
-                originalPassword != inputPassword && 
-                    res.status(200).json({
-                        message: "You have supplied wrong password",
-                        error: true
-                    });
-        
-                const accessToken = jwt.sign(
-                {
-                    id: user._id,
-                    email: user.email,
-                    role: user.role,
-                },
-                process.env.JWT_KEY,
-                     {expiresIn:"10d"}
-                );
-          
-                const { password, ...others } = user._doc;  
-                res.status(200).json({...others, accessToken});
-            }
+                });
+    
+            const accessToken = jwt.sign(
+            {
+                id: user._id,
+                email: user.email,
+                role: user.role,
+            },
+            process.env.JWT_KEY,
+                 {expiresIn:"10d"}
+            );
+      
+            const { password, ...others } = user._doc;  
+            res.status(200).json({...others, accessToken});
 
         } else {
             res.status(200).json({
