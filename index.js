@@ -3,7 +3,7 @@ const dotenv = require("dotenv")
 const cors = require("cors")
 const authRoute = require("./routes/auth")
 const staffRoute = require("./routes/staff")
-const expenseRoute = require("./routes/expense")
+const expenditureRoute = require("./routes/expenditure")
 const adminRoute = require("./routes/admin")
 const countryRoute = require("./routes/country")
 const mongoose = require("mongoose")
@@ -28,7 +28,7 @@ app.get('/s3Url/:extension',async (req,res)=>{
 
 app.use("/api/v1/auth",authRoute);
 app.use("/api/v1/staffs",staffRoute);
-app.use("/api/v1/expenses",expenseRoute);
+app.use("/api/v1/expenditures",expenditureRoute);
 app.use("/api/v1/admin",adminRoute);
 app.use("/api/v1/country",countryRoute);
 app.listen(process.env.PORT || 5000,()=>{

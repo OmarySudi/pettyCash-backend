@@ -1,4 +1,4 @@
-const Expense = require("../models/expense")
+const Expenditure = require("../models/expenditure")
 const router = require("express").Router();
 
 const {
@@ -9,13 +9,13 @@ const {
 
 //CREATE AN EXPENSE
 router.post("/", verifyTokenAndOperator, async (req, res) => {
-    const expense = new Expense(req.body);
+    const expenditure = new Expenditure(req.body);
     try {
-      const savedExpense= await expense.save();
+      const savedExpenditure= await expenditure.save();
       res.status(200).
       json({
-          message: "Expense have been successfully created",
-          body: savedExpense
+          message: "Expenditure have been successfully created",
+          body: savedExpenditure
         });
     } catch (err) {
         res.status(500).json(
@@ -30,7 +30,7 @@ router.post("/", verifyTokenAndOperator, async (req, res) => {
 //UPDATE AN EXPENSE
 router.put("/:id", verifyTokenAndOperator, async (req, res) => {
     try {
-      const updatedExpense = await Expense.findByIdAndUpdate(
+      const updatedExpenditure = await Expenditure.findByIdAndUpdate(
         req.params.id,
         {
           $set: req.body,
@@ -38,12 +38,12 @@ router.put("/:id", verifyTokenAndOperator, async (req, res) => {
         { new: true }
       );
 
-      if (updatedExpense != null){
+      if (updatedExpenditure != null){
 
         res.status(200).json(
             {
-                message: "Expense has been successfully updated",
-                body: updatedExpense,
+                message: "Expenditure has been successfully updated",
+                body: updatedExpenditure,
             }
             );
 
@@ -68,13 +68,13 @@ router.put("/:id", verifyTokenAndOperator, async (req, res) => {
   //DELETE AND EXPENSE
 router.delete("/:id", verifyTokenAndOperator, async (req, res) => {
     try {
-      deletedExpense = await Expense.findByIdAndDelete(req.params.id);
+      deletedExpenditure = await Expenditure.findByIdAndDelete(req.params.id);
       
-      if (deletedExpense != null){
+      if (deletedExpenditure != null){
         res.status(200).json(
             {
-              message: "Expense has been deleted",
-              body: deletedExpense,
+              message: "Expenditure has been deleted",
+              body: deletedExpenditure,
             }
          );
       } else {
@@ -98,12 +98,13 @@ router.delete("/:id", verifyTokenAndOperator, async (req, res) => {
 //GET STAFF
 router.get("/:id",verifyToken,async (req, res) => {
     try {
-      const expense = await Expense.findById(req.params.id);
-      if(expense != null){
+      const expenditure = await Expenditure.findById(req.params.id);
+
+      if(expenditure != null){
         res.status(200).json(
             {
               message: "Successfully operation",
-              body:expense
+              body:expenditure
             }
           );
       } else {
@@ -126,37 +127,37 @@ router.get("/:id",verifyToken,async (req, res) => {
 
   router.get("/",verifyToken,async (req, res) => {
     const qCountry = req.query.country;
-    const qType = req.query.type;
+    const qCategory = req.query.category;
     const qStaff = req.query.staff;
 
     try {
-    let expenses;
+    let expenditures;
        
      if (qCountry) {
-        expenses = await Expense.find({
+      expenditures = await Expenditure.find({
           country: {
             $in: [qCountry],
           },
         });
-      } else if (qType){
-        expenses = await Expense.find({
-            expenseType: {
-                $in: [qType],
+      } else if (qCategory){
+        expenditures = await Expenditure.find({
+            category: {
+                $in: [qCategory],
             }
         });
       } else if (qStaff){
-        expenses = await Expense.find({
+        expenditures = await Expenditure.find({
             staffId: {
                 $in: [qStaff],
             }
         });
       } else {
-        expenses = await Expense.find();
+        expenditures = await Expenditure.find();
       }
       res.status(200).json(
         {
             message: "Successfully operation",
-            body: expenses
+            body: expenditures
         }
         );
 
