@@ -8,6 +8,7 @@ const ExpenditureSchema = new mongoose.Schema(
         country: { type: String, required: true},
         currency: { type: String, required: true},
         description: {type: String},
+        registeredBy: {type: String},
         staffId: { type: String},
         date: { type: Date}
     },

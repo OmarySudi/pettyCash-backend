@@ -7,7 +7,8 @@ const UserSchema = new mongoose.Schema(
         password: {type: String, required: true},
         role: {type: String, default: "default"},
         confirmationCode: { type: String, unique: true},
-        isEmailVerified: {type: Boolean, default: false}
+        isEmailVerified: {type: Boolean, default: false},
+        location: {type: String, required: true}
     },
     {timestamps: true}
 )
