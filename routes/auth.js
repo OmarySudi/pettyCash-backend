@@ -33,6 +33,7 @@ router.post("/register",async (req,res)=>{
                     userName: req.body.userName,
                     email: req.body.email,
                     role: req.body.role? req.body.role: "default",
+                    country: req.body.country,
                     password: CryptoJS.AES.encrypt(
                         req.body.password,
                         process.env.PASS_KEY

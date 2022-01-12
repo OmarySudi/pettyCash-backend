@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema(
         role: {type: String, default: "default"},
         confirmationCode: { type: String, unique: true},
         isEmailVerified: {type: Boolean, default: false},
-        location: {type: String, required: true}
+        country: {type: String, required: true}
     },
     {timestamps: true}
 )
